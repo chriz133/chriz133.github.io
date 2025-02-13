@@ -1,0 +1,58 @@
+* {
+    touch-action: manipulation; !important; /* Verhindert Doppel-Tap-Zoom */
+}
+
+
+body{
+    background-color: #222020;
+}
+
+.no-zoom-div{
+    background-color: #222020;
+    display: flex;
+    /*justify-content: center;*/
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Consolas', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+    color: #edb6b6;
+}
+
+h1{
+    margin-top: 50%;
+}
+.ico{
+    font-size: 200px;
+    animation: heartbeat 5s infinite ease-in-out;
+}
+
+.btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 110px;
+    font-size: 3rem;
+    vertical-align: center;
+    background-color: #7c4c4c;
+    border-radius: 50px;
+    user-select: none;
+}
+
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.2);
+    }
+    50% {
+        transform: scale(1);
+    }
+    75% {
+        transform: scale(1.4);
+    }
+}
