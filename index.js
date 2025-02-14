@@ -27,9 +27,11 @@ let state = 0;
 const text = ["Du", "Bist", "Einzigartig", "Und", "Wundervoll", "", "...", "<3", "&#9993;",
     `Liebe Samara, <br><br>
 
-heute ist Valentinstag, und auch wenn wir uns leider nicht sehen können, bist du in meinen Gedanken ganz nah. Ich hoffe, du weißt, wie viel du mir bedeutest. Jedes "Hab dich lieb" von dir macht meinen Tag ein kleines bisschen schöner, und ich hoffe, dass meine Worte heute dasselbe für dich tun. <br><br>
+heute ist Valentinstag, und auch wenn wir uns leider nicht sehen können, bist du in meinen Gedanken ganz nah. Vielleicht hast du auch aktuell keine Lust auf so einen Tag aber ich möchte dir trotzdem kurz was sagen. Ich hoffe, du weißt, wie viel du mir bedeutest. Jedes "Hab dich lieb" von dir macht meinen Tag ein kleines bisschen schöner, und ich hoffe, dass meine Worte heute dasselbe für dich tun. <br><br>
 
 Es tut mir leid, dass du aktuell viel zum verarbeiten hast. Ich wünschte, ich könnte gerade bei dir sein, dich in den Arm nehmen und dir ein Lächeln ins Gesicht zaubern. Aber ich verspreche dir, sobald es geht und du willst, holen wir das nach! Dann bekommst du nicht nur die schönsten Blumen, sondern auch die Zeit und Aufmerksamkeit, die du verdienst.<br><br>
+
+In der Vergangenheit wurde auf deine Gefühle oft zu wenig Rücksicht genommen, aber das wird sich ändern. In der Zukunft sollen deine Gedanken, Wünsche und Emotionen die höchste Priorität haben. Du verdienst es, gesehen und verstanden zu werden. Ich werde immer für dich da sein, nicht nur an guten Tagen, sondern auch dann, wenn es schwerfällt. Schritt für Schritt, ohne Druck, aber mit ganz viel Herz. <br><br>
 
 Bis dahin denke ich an dich und schicke dir eine große Umarmung. Hab einen schönen Tag, so schön, wie du es bist. <br><br>
 
