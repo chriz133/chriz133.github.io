@@ -2,6 +2,20 @@
     touch-action: manipulation; !important; /* Verhindert Doppel-Tap-Zoom */
 }
 
+.center-container{
+    width: 100%;
+}
+
+.center-text{
+    margin-left: 20%;
+    margin-right: 20%;
+    font-size: 3rem;
+    text-align: left;
+    font-family: 'consolas';
+    color: #7c4c4c;
+    font-weight: bolder;
+}
+
 
 body{
     background-color: #222020;
