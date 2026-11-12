@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AMS Codec Comparison</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 16px; line-height: 1.5; color: #222; }
+  img { max-width: 100%; }
+  table { border-collapse: collapse; }
+  td, th { border: 1px solid #ccc; padding: 4px 10px; text-align: left; }
+  code { background: #eee; padding: 1px 4px; }
+</style>
+</head>
+<body>
+<h1>AMS: codec comparison</h1>
+<p><a href="../">&larr; DASH player</a> · <a href="results.csv">results.csv</a></p>
+
+<h2>Setup</h2>
+<p>5 s clip of <code>input.mp4</code> (1080p, 30 fps), encoded at 200k, 500k, 1M, 3M and 5M with
+libx264, libx265, SVT-AV1 and vvenc (VVC, preset <code>faster</code>). Time and energy were
+measured with CodeCarbon (energy on a Mac is only an estimate).</p>
+
+<h2>DASH vs HLS</h2>
+<table>
+<tr><th></th><th>HLS</th><th>DASH</th></tr>
+<tr><td>Manifest</td><td><code>.m3u8</code> (text playlist)</td><td><code>.mpd</code> (XML)</td></tr>
+<tr><td>Segments</td><td><code>.ts</code> / fMP4</td><td><code>.m4s</code> (fMP4) + <code>init.mp4</code></td></tr>
+<tr><td>Standard</td><td>Apple, proprietary</td><td>ISO/MPEG, open</td></tr>
+<tr><td>Browser support</td><td>Native on Safari/iOS, else hls.js</td><td>Needs dash.js (not on iOS)</td></tr>
+<tr><td>Codecs</td><td>Mostly H.264/HEVC</td><td>Any codec</td></tr>
+</table>
+
+<h2>Quality vs bitrate</h2>
+<img src="1_quality.png" alt="PSNR, SSIM, VMAF vs bitrate">
+
+<h2>Encoding time</h2>
+<img src="2_encoding_time.png" alt="Encoding time vs bitrate">
+
+<h2>Encoding energy</h2>
+<img src="3_encoding_energy.png" alt="Encoding energy vs bitrate">
+
+<h2>Decoding time</h2>
+<img src="4_decoding_time.png" alt="Decoding time vs bitrate">
+
+<h2>Decoding energy</h2>
+<img src="5_decoding_energy.png" alt="Decoding energy vs bitrate">
+
+<p><a href="WHAT_WE_DID.md">What we did (steps and commands)</a></p>
+</body>
+</html>
