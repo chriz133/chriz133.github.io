@@ -17,9 +17,13 @@
 <p><a href="../">&larr; DASH player</a> · <a href="results.csv">results.csv</a></p>
 
 <h2>Setup</h2>
-<p>5 s clip of <code>input.mp4</code> (1080p, 30 fps), encoded at 200k, 500k, 1M, 3M and 5M with
-libx264, libx265, SVT-AV1 and vvenc (VVC, preset <code>faster</code>). Time and energy were
-measured with CodeCarbon (energy on a Mac is only an estimate).</p>
+<p>5 s clip of <code>input.mp4</code> (30 fps), once at 1080p and once scaled down to 720p, encoded at
+200k, 500k, 1M, 3M and 5M with libx264, libx265, SVT-AV1 and vvenc (VVC, preset <code>faster</code>).
+Time and energy were measured with CodeCarbon (energy on a Mac is only an estimate).</p>
+<p><b>Note:</b> vvenc was run with <code>-t 0</code> = a single thread, while the other codecs use several cores.
+So vvenc's time and energy are higher than they would be with its default settings.
+Quality is not affected.</p>
+<p>Jump to: <a href="#p1080">1080p</a> · <a href="#p720">720p</a> · <a href="#cmp">1080p vs 720p</a></p>
 
 <h2>DASH vs HLS</h2>
 <table>
@@ -31,21 +35,47 @@ measured with CodeCarbon (energy on a Mac is only an estimate).</p>
 <tr><td>Codecs</td><td>Mostly H.264/HEVC</td><td>Any codec</td></tr>
 </table>
 
-<h2>Quality vs bitrate</h2>
+<h2 id="p1080">1080p</h2>
+<h3>Quality vs bitrate</h3>
 <img src="1_quality.png" alt="PSNR, SSIM, VMAF vs bitrate">
 
-<h2>Encoding time</h2>
+<h3>Encoding time</h3>
 <img src="2_encoding_time.png" alt="Encoding time vs bitrate">
 
-<h2>Encoding energy</h2>
+<h3>Encoding energy</h3>
 <img src="3_encoding_energy.png" alt="Encoding energy vs bitrate">
 
-<h2>Decoding time</h2>
+<h3>Decoding time</h3>
 <img src="4_decoding_time.png" alt="Decoding time vs bitrate">
 
-<h2>Decoding energy</h2>
+<h3>Decoding energy</h3>
 <img src="5_decoding_energy.png" alt="Decoding energy vs bitrate">
 
-<p><a href="WHAT_WE_DID.md">What we did (steps and commands)</a></p>
+<h2 id="p720">720p</h2>
+<h3>Quality vs bitrate</h3>
+<img src="720p_1_quality.png" alt="PSNR, SSIM, VMAF vs bitrate">
+
+<h3>Encoding time</h3>
+<img src="720p_2_encoding_time.png" alt="Encoding time vs bitrate">
+
+<h3>Encoding energy</h3>
+<img src="720p_3_encoding_energy.png" alt="Encoding energy vs bitrate">
+
+<h3>Decoding time</h3>
+<img src="720p_4_decoding_time.png" alt="Decoding time vs bitrate">
+
+<h3>Decoding energy</h3>
+<img src="720p_5_decoding_energy.png" alt="Decoding energy vs bitrate">
+
+<h2 id="cmp">1080p vs 720p</h2>
+<p>Solid line = 1080p, dashed line = 720p. Left to right: quality (VMAF), encoding time, encoding energy.</p>
+<img src="6_compare_1080p_vs_720p.png" alt="1080p vs 720p comparison">
+<ul>
+<li>At the same bitrate, 720p looks better (higher VMAF), because the same bits are spread over fewer pixels.
+(VMAF compares each version with its own original, so this is not "720p is nicer than 1080p".)</li>
+<li>720p encodes in about half the time and energy: it has only 44% of the pixels.</li>
+<li>The ranking of the codecs stays the same at both resolutions.</li>
+</ul>
+<p><a href="results_720p.csv">results_720p.csv</a> · <a href="WHAT_WE_DID.md">What we did (steps and commands)</a></p>
 </body>
 </html>
