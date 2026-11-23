@@ -63,7 +63,7 @@ ffmpeg -i input.mp4 -t 5 -an -vf scale=1280:720 -pix_fmt yuv420p -r 30 ref720.y4
 </table>
 
 <h2>3. Encode, decode and measure</h2>
-<p>One script does everything: <code>measure.py</code>.</p>
+<p>One script does everything: <a href="measure.py"><code>measure.py</code></a>.</p>
 <pre><code>python measure.py        # 1080p, writes results.csv
 python measure.py 720    # 720p,  writes results_720p.csv</code></pre>
 <p>4 codecs &times; 5 bitrates = 20 encodes per resolution. These are the encode commands inside the script:</p>
@@ -110,7 +110,7 @@ vvdecapp -b out.266 -o /dev/null             # the same for VVC</code></pre>
 <pre><code>python plot.py            # 1080p plots
 python plot.py 720        # 720p plots (file names start with 720p_)
 python plot.py compare    # 1080p vs 720p</code></pre>
-<p><code>plot.py</code> is short and does the same thing for every plot:</p>
+<p><a href="plot.py"><code>plot.py</code></a> is short and does the same thing for every plot:</p>
 <ol>
   <li>Read the result csv with pandas (one row per run).</li>
   <li>Split the rows by codec. Each codec gets its own line and colour.</li>
