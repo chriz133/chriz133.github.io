@@ -135,16 +135,6 @@ vvdecapp -b out.266 -o /dev/null             # the same for VVC</code></pre>
 <tr><td><code>6_compare_1080p_vs_720p.png</code></td><td>solid line = 1080p, dashed line = 720p (VMAF, encoding time, encoding energy)</td></tr>
 </table>
 
-<h2>6. Put it online</h2>
-<p>The site is the GitHub repo <code>chriz133/chriz133.github.io</code>. We added a folder <code>codecs/</code> with the page, the PNGs and the csv files:</p>
-<pre><code>git clone https://github.com/chriz133/chriz133.github.io.git
-cp codecs/{index.html,what-we-did.html,*.png,results*.csv} chriz133.github.io/codecs/
-cd chriz133.github.io
-git add codecs
-git commit -m "Update codec page"
-git push</code></pre>
-<p>GitHub Pages publishes the folder automatically after a minute or so.</p>
-
 <h2>Good to know</h2>
 <ul>
   <li>vvenc is the slowest encoder (about 30&ndash;55 s for the 5 s clip at 1080p; the others take 4&ndash;12 s), which is why the clip is only 5 seconds.</li>
