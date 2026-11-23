@@ -20,9 +20,6 @@
 <p>5 s clip of <code>input.mp4</code> (30 fps), once at 1080p and once scaled down to 720p, encoded at
 200k, 500k, 1M, 3M and 5M with libx264, libx265, SVT-AV1 and vvenc (VVC, preset <code>faster</code>).
 Time and energy were measured with CodeCarbon (energy on a Mac is only an estimate).</p>
-<p><b>Note:</b> vvenc was run with <code>-t 0</code> = a single thread, while the other codecs use several cores.
-So vvenc's time and energy are higher than they would be with its default settings.
-Quality is not affected.</p>
 <p>Jump to: <a href="#p1080">1080p</a> · <a href="#p720">720p</a> · <a href="#cmp">1080p vs 720p</a></p>
 
 <h2>DASH vs HLS</h2>
@@ -74,7 +71,7 @@ Quality is not affected.</p>
 <li>At the same bitrate, 720p looks better (higher VMAF), because the same bits are spread over fewer pixels.
 (VMAF compares each version with its own original, so this is not "720p is nicer than 1080p".)</li>
 <li>720p encodes in about half the time and energy: it has only 44% of the pixels.</li>
-<li>The ranking of the codecs stays the same at both resolutions.</li>
+<li>The overall picture is the same at both resolutions: SVT-AV1 and vvenc give the best quality at low bitrates, x264 is the fastest, and vvenc is the slowest and uses the most energy.</li>
 </ul>
 <p><a href="results_720p.csv">results_720p.csv</a> · <a href="WHAT_WE_DID.md">What we did (steps and commands)</a></p>
 </body>

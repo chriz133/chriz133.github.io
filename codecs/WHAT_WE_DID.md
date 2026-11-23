@@ -48,14 +48,13 @@ ffmpeg -i ../input.mp4 -t 5 -an -vf scale=1280:720 -pix_fmt yuv420p -r 30 ref720
 ffmpeg -i ref.y4m -c:v libx264   -b:v 1000k out.mp4            # x264  (H.264)
 ffmpeg -i ref.y4m -c:v libx265   -b:v 1000k out.mp4            # x265  (H.265)
 ffmpeg -i ref.y4m -c:v libsvtav1 -b:v 1000k out.mkv            # SVT-AV1
-vvencapp -i ref.y4m -b 1000k --preset faster -t 0 -o out.266   # vvenc (H.266 / VVC)
+vvencapp -i ref.y4m -b 1000k --preset faster -o out.266        # vvenc (H.266 / VVC)
 ```
 | Parameter | Meaning |
 |---|---|
 | `-c:v libx264` | which video codec (encoder) to use |
 | `-b:v 1000k` / `-b 1000k` | target bitrate: 1000 kbit/s (the encoder aims for it but misses a bit) |
 | `--preset faster` | vvenc speed setting: faster = quicker but a little worse compression |
-| `-t 0` | vvenc threads. **0 = one thread only.** Careful: the other codecs use several CPU cores, so vvenc's time and energy are higher than they would be with its default. We used the same setting for 1080p and 720p, so those two are still comparable. |
 | `-o out.266` | output file |
 
 Decoding (what we time and measure):
@@ -101,6 +100,6 @@ cd chriz133.github.io && git add codecs && git commit -m "Update codec page" && 
 Live at https://chriz133.github.io/codecs/
 
 ## Notes
-- vvenc is slow (about 1 frame/s at 1080p with one thread), so the clip is only 5 s.
+- vvenc is the slowest encoder (about 30-55 s for the 5 s clip at 1080p, the others take 4-12 s), so the clip is only 5 s.
 - If `measure.py` is stopped, start it again: it skips runs that are already in the csv.
 - Encoders do not hit the target bitrate exactly (e.g. SVT-AV1 asked 5000k, got 5546k).
