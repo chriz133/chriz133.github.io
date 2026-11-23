@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What we did</title>
+<style>
+  :root { --bg: #fff; --fg: #222; --muted: #666; --line: #ddd; --code: #f1f1f1; --accent: #1a5fb4; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16181d; --fg: #e6e6e6; --muted: #9aa0a6; --line: #333; --code: #23262d; --accent: #7fb0ff; }
+  }
+  body { background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif;
+         max-width: 820px; margin: 2rem auto; padding: 0 16px; line-height: 1.6; }
+  h1 { margin-bottom: .2rem; }
+  h2 { margin-top: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: .2rem; }
+  a { color: var(--accent); }
+  code { background: var(--code); padding: 1px 5px; border-radius: 3px; font-size: .92em; }
+  pre { background: var(--code); padding: 12px; border-radius: 6px; overflow-x: auto; line-height: 1.4; }
+  pre code { padding: 0; background: none; }
+  table { border-collapse: collapse; margin: .8rem 0; width: 100%; }
+  td, th { border: 1px solid var(--line); padding: 5px 10px; text-align: left; vertical-align: top; }
+  .muted { color: var(--muted); }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+
+<h1>What we did</h1>
+<p class="muted"><a href="./">&larr; back to the results</a></p>
+
+<p>We encoded one video with 4 different codecs at 5 different bitrates, measured how good it looks,
+how long it takes and how much energy it uses, and plotted everything. We did it twice: once in 1080p and once in 720p.
+This page lists every step and every command.</p>
+
+<h2>1. DASH vs HLS</h2>
+<ul>
+  <li><b>First exercise (15 Oct):</b> DASH, published on <a href="../">chriz133.github.io</a>.</li>
+  <li><b>This exercise (19 Oct):</b> the same thing with the other format, HLS.</li>
+  <li>Same 5 bitrates both times: 200k, 500k, 1M, 3M, 5M (1080p).</li>
+</ul>
+<table>
+<tr><th></th><th>HLS</th><th>DASH</th></tr>
+<tr><td>Manifest (the "table of contents")</td><td><code>.m3u8</code>, a text playlist</td><td><code>.mpd</code>, an XML file</td></tr>
+<tr><td>Video pieces</td><td><code>.ts</code> or fMP4</td><td><code>.m4s</code> + one <code>init.mp4</code></td></tr>
+<tr><td>Standard</td><td>Apple, proprietary</td><td>ISO/MPEG, open</td></tr>
+<tr><td>Browser support</td><td>Native on Safari/iOS, else hls.js</td><td>Needs dash.js (not on iOS)</td></tr>
+<tr><td>Codecs</td><td>Mostly H.264/HEVC</td><td>Any codec</td></tr>
+</table>
+
+<h2>2. Setup (done once)</h2>
+<pre><code>brew install vvenc vvdec                       # VVC encoder + decoder (ffmpeg cannot encode VVC)
+python3 -m venv ../.venv                       # a private Python folder for this project
+../.venv/bin/pip install codecarbon pandas matplotlib</code></pre>
+<ul>
+  <li><b>vvenc / vvdec:</b> programs that encode and decode VVC (also called H.266).</li>
+  <li><b>codecarbon:</b> measures energy use. <b>pandas:</b> reads the result table. <b>matplotlib:</b> draws the plots.</li>
+</ul>
+
+<h2>3. Make the test clips</h2>
+<p>We use only the first 5 seconds of <code>input.mp4</code>, because vvenc is slow.</p>
+<pre><code>ffmpeg -i ../input.mp4 -t 5 -an -pix_fmt yuv420p -r 30 ref.y4m                          # 1080p
+ffmpeg -i ../input.mp4 -t 5 -an -vf scale=1280:720 -pix_fmt yuv420p -r 30 ref720.y4m    # 720p</code></pre>
+<table>
+<tr><th>Part</th><th>Meaning</th></tr>
+<tr><td><code>-i file</code></td><td>the input file</td></tr>
+<tr><td><code>-t 5</code></td><td>only take 5 seconds</td></tr>
+<tr><td><code>-an</code></td><td>no audio</td></tr>
+<tr><td><code>-vf scale=1280:720</code></td><td>make the picture 1280x720 (the 1080p clip is not resized)</td></tr>
+<tr><td><code>-pix_fmt yuv420p</code></td><td>a standard colour format every encoder understands</td></tr>
+<tr><td><code>-r 30</code></td><td>30 frames per second</td></tr>
+<tr><td><code>ref.y4m</code></td><td>raw, uncompressed video: the "perfect original" we compare against</td></tr>
+</table>
+
+<h2>4. Encode, decode and measure</h2>
+<p>One script does everything: <code>measure.py</code>.</p>
+<pre><code>../.venv/bin/python measure.py        # 1080p, writes results.csv
+../.venv/bin/python measure.py 720    # 720p,  writes results_720p.csv</code></pre>
+<p>4 codecs &times; 5 bitrates = 20 encodes per resolution. These are the encode commands inside the script:</p>
+<pre><code>ffmpeg -i ref.y4m -c:v libx264   -b:v 1000k out.mp4            # x264  (H.264)
+ffmpeg -i ref.y4m -c:v libx265   -b:v 1000k out.mp4            # x265  (H.265)
+ffmpeg -i ref.y4m -c:v libsvtav1 -b:v 1000k out.mkv            # SVT-AV1
+vvencapp -i ref.y4m -b 1000k --preset faster -o out.266        # vvenc (H.266 / VVC)</code></pre>
+<table>
+<tr><th>Part</th><th>Meaning</th></tr>
+<tr><td><code>-c:v libx264</code></td><td>which video codec (encoder) to use</td></tr>
+<tr><td><code>-b:v 1000k</code> / <code>-b 1000k</code></td><td>target bitrate: 1000 kbit/s. The encoder aims for it but misses a bit.</td></tr>
+<tr><td><code>--preset faster</code></td><td>vvenc speed setting: faster = quicker, but slightly worse compression</td></tr>
+<tr><td><code>-o out.266</code></td><td>the output file</td></tr>
+</table>
+
+<h3>Decoding</h3>
+<p>Decoding means turning the compressed file back into video. We time this too.</p>
+<pre><code>ffmpeg -i out.mp4 -f null -                  # decode and throw the result away
+vvdecapp -b out.266 -o /dev/null             # the same for VVC</code></pre>
+<ul>
+  <li><code>-f null -</code> = decode everything but write nothing. <code>/dev/null</code> = the same idea (a trash bin).</li>
+  <li><code>-b</code> = the compressed file to read. <code>-o</code> = where to write the decoded video.</li>
+</ul>
+
+<h3>How we measure</h3>
+<ul>
+  <li><b>Time:</b> Python's <code>time.perf_counter()</code> before and after the command.</li>
+  <li><b>Energy:</b> CodeCarbon (<code>OfflineEmissionsTracker</code>) around the command, in Wh.
+      On a Mac this is only an estimate (there are no real power sensors), so it mostly follows the run time.</li>
+  <li><b>Quality:</b> we decode the file again and compare it with <code>ref.y4m</code> using ffmpeg filters:</li>
+</ul>
+<pre><code>ffmpeg -i decoded.y4m -i ref.y4m -lavfi "[0:v][1:v]psnr;[0:v][1:v]ssim;[0:v][1:v]libvmaf" -f null -</code></pre>
+<table>
+<tr><th>Part</th><th>Meaning</th></tr>
+<tr><td><code>[0:v][1:v]</code></td><td>first input (the encoded video) vs second input (the original)</td></tr>
+<tr><td><code>psnr</code></td><td>pixel error in dB. Higher = better. Simple, but not how people really see.</td></tr>
+<tr><td><code>ssim</code></td><td>similarity from 0 to 1. 1 = identical.</td></tr>
+<tr><td><code>libvmaf</code></td><td>Netflix's VMAF score, 0 to 100. Closest to what people see.</td></tr>
+<tr><td><code>-lavfi</code></td><td>"filter graph": run these filters on the videos</td></tr>
+</table>
+<p>Every run becomes one row in the result csv (codec, bitrate, quality scores, time, energy).</p>
+
+<h2>5. How we plotted</h2>
+<pre><code>../.venv/bin/python plot.py            # 1080p plots
+../.venv/bin/python plot.py 720        # 720p plots (file names start with 720p_)
+../.venv/bin/python plot.py compare    # 1080p vs 720p</code></pre>
+<p><code>plot.py</code> is short and does the same thing for every plot:</p>
+<ol>
+  <li>Read the result csv with pandas (one row per run).</li>
+  <li>Split the rows by codec. Each codec gets its own line and colour.</li>
+  <li>X axis = the <b>real</b> bitrate of each file (not the target), on a log scale with ticks at 200, 500, 1000, 3000, 5000.</li>
+  <li>Y axis = the thing we measure: quality, time or energy. For time and energy the y axis is also logarithmic, because vvenc is much higher than the others and they would otherwise be squashed at the bottom.</li>
+  <li>Save the picture as a PNG with matplotlib.</li>
+</ol>
+<table>
+<tr><th>File</th><th>Shows</th></tr>
+<tr><td><code>1_quality.png</code></td><td>PSNR, SSIM and VMAF vs bitrate</td></tr>
+<tr><td><code>2_encoding_time.png</code>, <code>3_encoding_energy.png</code></td><td>how long encoding takes and how much energy it uses</td></tr>
+<tr><td><code>4_decoding_time.png</code>, <code>5_decoding_energy.png</code></td><td>the same for decoding</td></tr>
+<tr><td><code>6_compare_1080p_vs_720p.png</code></td><td>solid line = 1080p, dashed line = 720p (VMAF, encoding time, encoding energy)</td></tr>
+</table>
+
+<h2>6. Put it online</h2>
+<p>The site is the GitHub repo <code>chriz133/chriz133.github.io</code>. We added a folder <code>codecs/</code> with the page, the PNGs and the csv files:</p>
+<pre><code>git clone https://github.com/chriz133/chriz133.github.io.git
+cp codecs/{index.html,what-we-did.html,*.png,results*.csv} chriz133.github.io/codecs/
+cd chriz133.github.io
+git add codecs
+git commit -m "Update codec page"
+git push</code></pre>
+<p>GitHub Pages publishes the folder automatically after a minute or so.</p>
+
+<h2>Good to know</h2>
+<ul>
+  <li>vvenc is the slowest encoder (about 30&ndash;55 s for the 5 s clip at 1080p; the others take 4&ndash;12 s), which is why the clip is only 5 seconds.</li>
+  <li>If <code>measure.py</code> is stopped, just start it again. It skips the runs that are already in the csv.</li>
+  <li>The encoders do not hit the target bitrate exactly (for example SVT-AV1 asked for 5000k and got 5546k). That is why the plots use the real bitrate.</li>
+  <li>Energy is a CodeCarbon estimate on a Mac, so treat it as a rough comparison, not exact numbers.</li>
+</ul>
+
+</body>
+</html>
