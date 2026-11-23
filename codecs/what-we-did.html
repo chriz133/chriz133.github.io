@@ -138,7 +138,6 @@ vvdecapp -b out.266 -o /dev/null             # the same for VVC</code></pre>
 <h2>Good to know</h2>
 <ul>
   <li>vvenc is the slowest encoder (about 30&ndash;55 s for the 5 s clip at 1080p; the others take 4&ndash;12 s), which is why the clip is only 5 seconds.</li>
-  <li>If <code>measure.py</code> is stopped, just start it again. It skips the runs that are already in the csv.</li>
   <li>The encoders do not hit the target bitrate exactly (for example SVT-AV1 asked for 5000k and got 5546k). That is why the plots use the real bitrate.</li>
   <li>Energy is a CodeCarbon estimate on a Mac, so treat it as a rough comparison, not exact numbers.</li>
 </ul>
